@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Waste Educational Game - GCSE Computer Science</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .game-area {
+            padding: 30px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .intro-screen {
+            text-align: center;
+        }
+
+        .intro-screen h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .intro-screen p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+        }
+
+        .question-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .question-card p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .option:hover {
+            border-color: #3498db;
+            transform: translateX(5px);
+            background: #ecf0f1;
+        }
+
+        .option.selected {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+
+        .option.correct {
+            border-color: #2ecc71;
+            background: #d4edda;
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background: #f8d7da;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .progress-bar {
+            background: #ecf0f1;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #3498db 0%, #2ecc71 100%);
+            height: 100%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .topic-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .topic-card:hover {
+            transform: scale(1.05);
+        }
+
+        .topic-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .topic-card p {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+
+        .results-screen {
+            text-align: center;
+        }
+
+        .results-screen h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 30px auto;
+            font-size: 3em;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.3);
+        }
+
+        .score-circle small {
+            font-size: 0.3em;
+            margin-top: 10px;
+        }
+
+        .summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .summary h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .summary-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3498db;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .summary-item.correct {
+            border-left-color: #2ecc71;
+        }
+
+        .summary-item.incorrect {
+            border-left-color: #e74c3c;
+        }
+
+        .drag-drop-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .drag-zone {
+            min-height: 200px;
+            border: 3px dashed #3498db;
+            border-radius: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+        }
+
+        .drag-zone h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .draggable {
+            background: white;
+            border: 2px solid #ddd;
+            padding: 12px;
+            margin: 8px;
+            border-radius: 8px;
+            cursor: move;
+            transition: all 0.3s;
+        }
+
+        .draggable:hover {
+            border-color: #3498db;
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .draggable.dragging {
+            opacity: 0.5;
+        }
+
+        .drag-zone.over {
+            background: #e3f2fd;
+            border-color: #2ecc71;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .info-box strong {
+            color: #856404;
+        }
+
+        .toxic-materials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .material-card {
+            background: #fff;
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .material-card:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .material-card .icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .drag-drop-area {
+                grid-template-columns: 1fr;
+            }
+            
+            .score-circle {
+                width: 150px;
+                height: 150px;
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>♻️ E-Waste Challenge</h1>
+            <p>Learn about Electronic Waste - GCSE Computer Science</p>
+        </div>
+
+        <div class="game-area">
+            <!-- Introduction Screen -->
+            <div id="intro-screen" class="screen active">
+                <div class="intro-screen">
+                    <h2>Welcome to the E-Waste Challenge!</h2>
+                    <p>📱 Electronic waste (e-waste) is one of the fastest-growing environmental problems in the world.</p>
+                    <p>🎮 In this interactive game, you'll learn about e-waste, its environmental impact, and what we can do to reduce it.</p>
+                    <p>🎓 This game covers all key concepts from the Edexcel GCSE Computer Science syllabus.</p>
+                    <p><strong>Ready to become an e-waste expert?</strong></p>
+                    <button class="btn btn-success" onclick="startGame()">Start Learning!</button>
+                </div>
+            </div>
+
+            <!-- Level Selection Screen -->
+            <div id="level-select" class="screen">
+                <h2 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">Choose Your Learning Path</h2>
+                
+                <div class="topic-card" onclick="startLevel(1)">
+                    <h3>📱 Level 1: What is E-Waste?</h3>
+                    <p>Learn the definition and examples of electronic waste</p>
+                </div>
+
+                <div class="topic-card" onclick="startLevel(2)">
+                    <h3>⚡ Level 2: Causes of E-Waste</h3>
+                    <p>Understand why e-waste is increasing rapidly</p>
+                </div>
+
+                <div class="topic-card" onclick="startLevel(3)">
+                    <h3>🌍 Level 3: Environmental Impact</h3>
+                    <p>Discover the toxic effects on our planet</p>
+                </div>
+
+                <div class="topic-card" onclick="startLevel(4)">
+                    <h3>🔒 Level 4: Data Security Risks</h3>
+                    <p>Learn about the dangers of improper disposal</p>
+                </div>
+
+                <div class="topic-card" onclick="startLevel(5)">
+                    <h3>⚖️ Level 5: Ethical Issues</h3>
+                    <p>Explore global responsibility and fairness</p>
+                </div>
+
+                <div class="topic-card" onclick="startLevel(6)">
+                    <h3>♻️ Level 6: Reducing E-Waste</h3>
+                    <p>Solutions to minimize environmental harm</p>
+                </div>
+
+                <div class="topic-card" onclick="startLevel(7)">
+                    <h3>📜 Level 7: Legislation & Regulation</h3>
+                    <p>Understanding WEEE and RoHS directives</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn" onclick="startFinalQuiz()">Take Final Quiz</button>
+                </div>
+            </div>
+
+            <!-- Game Screen -->
+            <div id="game-screen" class="screen">
+                <div class="score-display">
+                    <span id="score-text">Score: <span id="score">0</span></span>
+                    <span style="margin: 0 20px;">|</span>
+                    <span>Level: <span id="current-level">1</span></span>
+                </div>
+
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill" style="width: 0%">0%</div>
+                </div>
+
+                <div id="question-container"></div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn" id="next-btn" onclick="nextQuestion()" style="display: none;">Next Question</button>
+                    <button class="btn" onclick="goToLevelSelect()">Back to Levels</button>
+                </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div id="results-screen" class="screen">
+                <div class="results-screen">
+                    <h2>🎉 Quiz Complete!</h2>
+                    <div class="score-circle">
+                        <div>
+                            <span id="final-score">0</span>%
+                            <small>Score</small>
+                        </div>
+                    </div>
+                    <div id="results-summary" class="summary"></div>
+                    <button class="btn btn-success" onclick="goToLevelSelect()">Choose Another Level</button>
+                    <button class="btn" onclick="restartGame()">Start Over</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let currentLevel = 0;
+        let currentQuestion = 0;
+        let score = 0;
+        let answers = [];
+        let questions = [];
+
+        // Question Database - Organized by level
+        const levelQuestions = {
+            1: [ // What is E-Waste?
+                {
+                    question: "What does 'e-waste' stand for?",
+                    options: [
+                        "Electronic waste",
+                        "Electrical water",
+                        "Energy waste",
+                        "Environmental waste"
+                    ],
+                    correct: 0,
+                    explanation: "E-waste refers to electronic waste - discarded electronic devices and components."
+                },
+                {
+                    question: "Which of the following is an example of e-waste?",
+                    options: [
+                        "Plastic bottles",
+                        "Old smartphones",
+                        "Food packaging",
+                        "Paper documents"
+                    ],
+                    correct: 1,
+                    explanation: "Old smartphones are electronic devices that become e-waste when discarded."
+                },
+                {
+                    question: "Which of these items would NOT be classified as e-waste?",
+                    options: [
+                        "Computer monitors",
+                        "Wooden furniture",
+                        "Circuit boards",
+                        "Computer keyboards"
+                    ],
+                    correct: 1,
+                    explanation: "Wooden furniture is not electronic, so it's not e-waste. E-waste only includes electronic devices and components."
+                },
+                {
+                    question: "What defines when a device becomes e-waste?",
+                    options: [
+                        "When it's more than 5 years old",
+                        "When it's no longer in use or has reached the end of its life cycle",
+                        "When it's broken beyond repair",
+                        "When a newer model is released"
+                    ],
+                    correct: 1,
+                    explanation: "Devices become e-waste when they are no longer in use or have reached the end of their life cycle."
+                }
+            ],
+            2: [ // Causes of E-Waste
+                {
+                    question: "What is 'planned obsolescence'?",
+                    options: [
+                        "Planning to recycle old devices",
+                        "Designing products with a limited lifespan to encourage replacement",
+                        "Creating repair centers",
+                        "Making products more durable"
+                    ],
+                    correct: 1,
+                    explanation: "Planned obsolescence is when products are designed with limited lifespans, encouraging consumers to buy new ones."
+                },
+                {
+                    question: "Which factor contributes most to rapid e-waste generation?",
+                    options: [
+                        "Better recycling programs",
+                        "Rapid technological change and short product life cycles",
+                        "Increased product durability",
+                        "Higher repair costs"
+                    ],
+                    correct: 1,
+                    explanation: "Rapid technological change and short product life cycles mean devices become outdated quickly, creating more e-waste."
+                },
+                {
+                    question: "Why are repairs often not economical?",
+                    options: [
+                        "Parts are too readily available",
+                        "Falling prices make buying new devices cheaper than repairing old ones",
+                        "All devices are easy to repair",
+                        "Repair shops are everywhere"
+                    ],
+                    correct: 1,
+                    explanation: "As prices of new devices fall, it often becomes cheaper to buy new rather than repair, contributing to e-waste."
+                },
+                {
+                    question: "What drives consumers to replace devices that still work?",
+                    options: [
+                        "Legal requirements",
+                        "Desire for new or more powerful devices",
+                        "Government mandates",
+                        "Environmental concerns"
+                    ],
+                    correct: 1,
+                    explanation: "The desire for newer, more powerful devices drives consumers to replace perfectly functional electronics."
+                }
+            ],
+            3: [ // Environmental Impact
+                {
+                    question: "Which toxic material is commonly found in electronic devices?",
+                    options: [
+                        "Carbon dioxide",
+                        "Lead and mercury",
+                        "Oxygen",
+                        "Water"
+                    ],
+                    correct: 1,
+                    explanation: "Electronic devices often contain toxic materials like lead, mercury, cadmium, and arsenic."
+                },
+                {
+                    question: "What happens when toxic materials from e-waste leak into the environment?",
+                    options: [
+                        "They help plants grow",
+                        "They contaminate soil and water",
+                        "They evaporate harmlessly",
+                        "They become nutrients"
+                    ],
+                    correct: 1,
+                    explanation: "Toxic materials like lead and mercury can leak into soil and water, causing serious environmental contamination."
+                },
+                {
+                    question: "Why are the plastics in e-waste particularly problematic?",
+                    options: [
+                        "They are too heavy",
+                        "They are non-biodegradable and persist in the environment",
+                        "They are too cheap",
+                        "They are too colorful"
+                    ],
+                    correct: 1,
+                    explanation: "Non-biodegradable plastics from e-waste persist in the environment for hundreds of years."
+                },
+                {
+                    question: "What is released when e-waste is burned to recover metals?",
+                    options: [
+                        "Clean water vapor",
+                        "Harmful gases causing air pollution",
+                        "Oxygen",
+                        "Nutrients"
+                    ],
+                    correct: 1,
+                    explanation: "Burning e-waste to recover metals releases harmful gases, causing air pollution and health problems."
+                },
+                {
+                    question: "Which hazardous substance is restricted by regulations in electronics?",
+                    options: [
+                        "Silicon",
+                        "Cadmium",
+                        "Copper",
+                        "Aluminum"
+                    ],
+                    correct: 1,
+                    explanation: "Cadmium is a toxic substance that regulations like RoHS aim to restrict in electronic products."
+                }
+            ],
+            4: [ // Data Security Risks
+                {
+                    question: "Why is data security a concern with e-waste?",
+                    options: [
+                        "Old devices are too slow",
+                        "Devices may still contain personal or sensitive data",
+                        "Batteries might explode",
+                        "Screens can break"
+                    ],
+                    correct: 1,
+                    explanation: "Old devices may still contain personal or sensitive data that could be accessed if not properly wiped."
+                },
+                {
+                    question: "What should you do before disposing of an old device?",
+                    options: [
+                        "Paint it a different color",
+                        "Properly wipe or destroy all data",
+                        "Install new software",
+                        "Charge the battery fully"
+                    ],
+                    correct: 1,
+                    explanation: "All personal and sensitive data should be properly wiped or destroyed before disposing of devices."
+                },
+                {
+                    question: "What risk exists if data is not properly erased from e-waste?",
+                    options: [
+                        "The device won't turn on",
+                        "Identity theft and privacy breaches",
+                        "The device will work better",
+                        "It will be easier to recycle"
+                    ],
+                    correct: 1,
+                    explanation: "Improperly erased data can lead to identity theft, privacy breaches, and unauthorized access to sensitive information."
+                }
+            ],
+            5: [ // Ethical Issues
+                {
+                    question: "Where is much of the world's e-waste exported to?",
+                    options: [
+                        "Wealthy nations",
+                        "Developing countries",
+                        "Antarctica",
+                        "Space stations"
+                    ],
+                    correct: 1,
+                    explanation: "Much e-waste is exported to developing countries where unsafe recycling practices harm workers and the environment."
+                },
+                {
+                    question: "What ethical concern does e-waste export raise?",
+                    options: [
+                        "Shipping costs",
+                        "Fairness and responsibility in global waste management",
+                        "Device compatibility",
+                        "Language barriers"
+                    ],
+                    correct: 1,
+                    explanation: "Exporting e-waste raises concerns about fairness and responsibility, as it often exploits developing nations."
+                },
+                {
+                    question: "How are workers in developing countries affected by e-waste?",
+                    options: [
+                        "They get higher wages",
+                        "Unsafe recycling practices harm their health",
+                        "They receive free electronics",
+                        "They get better education"
+                    ],
+                    correct: 1,
+                    explanation: "Workers in developing countries often use unsafe recycling methods that expose them to toxic materials and health risks."
+                },
+                {
+                    question: "Who should be responsible for managing e-waste?",
+                    options: [
+                        "Only consumers",
+                        "Manufacturers, consumers, and governments working together",
+                        "Only the recycling industry",
+                        "Only developing countries"
+                    ],
+                    correct: 1,
+                    explanation: "Managing e-waste requires shared responsibility among manufacturers, consumers, and governments."
+                }
+            ],
+            6: [ // Reducing E-Waste
+                {
+                    question: "What is the benefit of recycling e-waste?",
+                    options: [
+                        "It makes devices slower",
+                        "It recovers valuable metals and materials",
+                        "It makes devices heavier",
+                        "It increases pollution"
+                    ],
+                    correct: 1,
+                    explanation: "Recycling e-waste allows us to recover valuable metals and materials, reducing the need for mining."
+                },
+                {
+                    question: "How does refurbishing help reduce e-waste?",
+                    options: [
+                        "It makes devices worse",
+                        "It extends product life by repairing and reusing",
+                        "It creates more waste",
+                        "It makes devices obsolete faster"
+                    ],
+                    correct: 1,
+                    explanation: "Refurbishing extends the life of products by repairing and reusing them, keeping them out of landfills longer."
+                },
+                {
+                    question: "What does 'design for sustainability' mean?",
+                    options: [
+                        "Making products that break quickly",
+                        "Designing products that are easier to upgrade, repair, or recycle",
+                        "Using more toxic materials",
+                        "Making products more expensive"
+                    ],
+                    correct: 1,
+                    explanation: "Design for sustainability means creating products that are modular, repairable, and easier to recycle."
+                },
+                {
+                    question: "Where should e-waste be disposed of?",
+                    options: [
+                        "Regular household bins",
+                        "Certified e-waste recycling centres",
+                        "Rivers or oceans",
+                        "Roadside ditches"
+                    ],
+                    correct: 1,
+                    explanation: "E-waste should only be disposed of at certified recycling centres that can safely handle toxic materials."
+                },
+                {
+                    question: "Which action helps reduce e-waste the most?",
+                    options: [
+                        "Buying new devices every month",
+                        "Using devices longer and repairing when possible",
+                        "Throwing devices in regular trash",
+                        "Buying multiple devices at once"
+                    ],
+                    correct: 1,
+                    explanation: "Using devices for longer periods and repairing them when possible significantly reduces e-waste generation."
+                }
+            ],
+            7: [ // Legislation & Regulation
+                {
+                    question: "What does WEEE stand for?",
+                    options: [
+                        "World Energy and Environment",
+                        "Waste Electrical and Electronic Equipment",
+                        "Western European Energy Exchange",
+                        "Water and Environmental Engineering"
+                    ],
+                    correct: 1,
+                    explanation: "WEEE stands for Waste Electrical and Electronic Equipment - a directive for managing e-waste."
+                },
+                {
+                    question: "What does the WEEE Directive require?",
+                    options: [
+                        "Consumers to pay more taxes",
+                        "Manufacturers to take responsibility for collecting and recycling products",
+                        "All electronics to be free",
+                        "Devices to last forever"
+                    ],
+                    correct: 1,
+                    explanation: "The WEEE Directive requires manufacturers to take responsibility for collecting and recycling their electronic products."
+                },
+                {
+                    question: "What does RoHS stand for?",
+                    options: [
+                        "Return of Hazardous Substances",
+                        "Restriction of Hazardous Substances",
+                        "Removal of Heavy Stones",
+                        "Recycling of Hardware Systems"
+                    ],
+                    correct: 1,
+                    explanation: "RoHS stands for Restriction of Hazardous Substances - it limits toxic materials in electronics."
+                },
+                {
+                    question: "What is the main purpose of the RoHS Directive?",
+                    options: [
+                        "To make electronics more expensive",
+                        "To limit the use of toxic substances in electronic products",
+                        "To ban all electronics",
+                        "To increase manufacturing costs"
+                    ],
+                    correct: 1,
+                    explanation: "RoHS limits the use of toxic substances like lead, mercury, and cadmium in electronic products."
+                },
+                {
+                    question: "Why is legislation like WEEE and RoHS important?",
+                    options: [
+                        "To increase company profits",
+                        "To protect the environment and human health from e-waste",
+                        "To make electronics harder to buy",
+                        "To reduce consumer choice"
+                    ],
+                    correct: 1,
+                    explanation: "These regulations protect the environment and human health by ensuring proper e-waste management and reducing toxic materials."
+                }
+            ]
+        };
+
+        // Comprehensive final quiz
+        const finalQuiz = [
+            {
+                question: "Which statement best defines e-waste?",
+                options: [
+                    "Any waste from factories",
+                    "Discarded electronic devices and components no longer in use",
+                    "Waste from power plants",
+                    "All household waste"
+                ],
+                correct: 1,
+                explanation: "E-waste specifically refers to discarded electronic devices and components that are no longer in use."
+            },
+            {
+                question: "What is a major cause of increasing e-waste?",
+                options: [
+                    "Devices lasting too long",
+                    "Rapid technological change and planned obsolescence",
+                    "Cheaper repair costs",
+                    "Fewer new products being released"
+                ],
+                correct: 1,
+                explanation: "Rapid technological change and planned obsolescence drive constant device replacement."
+            },
+            {
+                question: "Which toxic substance is commonly found in e-waste?",
+                options: [
+                    "Salt",
+                    "Mercury",
+                    "Sugar",
+                    "Vitamin C"
+                ],
+                correct: 1,
+                explanation: "Mercury is one of several toxic substances found in electronic devices."
+            },
+            {
+                question: "Why must data be wiped from devices before disposal?",
+                options: [
+                    "To make them lighter",
+                    "To prevent identity theft and privacy breaches",
+                    "To improve battery life",
+                    "To make screens brighter"
+                ],
+                correct: 1,
+                explanation: "Wiping data prevents unauthorized access to personal and sensitive information."
+            },
+            {
+                question: "What ethical issue is associated with e-waste export?",
+                options: [
+                    "Higher profits for manufacturers",
+                    "Unsafe recycling practices harming workers in developing countries",
+                    "Better internet speeds",
+                    "Improved technology"
+                ],
+                correct: 1,
+                explanation: "Exporting e-waste often leads to unsafe recycling practices that harm workers in developing nations."
+            },
+            {
+                question: "Which method helps reduce e-waste?",
+                options: [
+                    "Buying new devices frequently",
+                    "Refurbishing and repairing devices",
+                    "Throwing devices in regular trash",
+                    "Ignoring old electronics"
+                ],
+                correct: 1,
+                explanation: "Refurbishing and repairing extends device life, reducing e-waste generation."
+            },
+            {
+                question: "What does the WEEE Directive require manufacturers to do?",
+                options: [
+                    "Make cheaper products",
+                    "Take responsibility for collecting and recycling their products",
+                    "Stop making electronics",
+                    "Increase prices"
+                ],
+                correct: 1,
+                explanation: "WEEE requires manufacturers to manage the collection and recycling of their products."
+            },
+            {
+                question: "What is the purpose of the RoHS Directive?",
+                options: [
+                    "To ban all electronics",
+                    "To restrict hazardous substances in electronic products",
+                    "To make electronics more expensive",
+                    "To reduce consumer rights"
+                ],
+                correct: 1,
+                explanation: "RoHS restricts the use of hazardous substances like lead and mercury in electronics."
+            },
+            {
+                question: "What environmental problem is caused by burning e-waste?",
+                options: [
+                    "Cleaner air",
+                    "Release of harmful gases and air pollution",
+                    "Better water quality",
+                    "Healthier soil"
+                ],
+                correct: 1,
+                explanation: "Burning e-waste releases toxic gases, causing air pollution and health hazards."
+            },
+            {
+                question: "Where should e-waste be properly disposed of?",
+                options: [
+                    "In regular household bins",
+                    "At certified e-waste recycling centres",
+                    "In rivers",
+                    "Anywhere convenient"
+                ],
+                correct: 1,
+                explanation: "Certified recycling centres have proper facilities to safely handle toxic materials in e-waste."
+            }
+        ];
+
+        function startGame() {
+            showScreen('level-select');
+        }
+
+        function startLevel(level) {
+            currentLevel = level;
+            currentQuestion = 0;
+            score = 0;
+            answers = [];
+            questions = levelQuestions[level];
+            
+            document.getElementById('current-level').textContent = level;
+            document.getElementById('score').textContent = score;
+            
+            showScreen('game-screen');
+            loadQuestion();
+        }
+
+        function startFinalQuiz() {
+            currentLevel = 'final';
+            currentQuestion = 0;
+            score = 0;
+            answers = [];
+            questions = finalQuiz;
+            
+            document.getElementById('current-level').textContent = 'Final';
+            document.getElementById('score').textContent = score;
+            
+            showScreen('game-screen');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestion >= questions.length) {
+                showResults();
+                return;
+            }
+
+            const question = questions[currentQuestion];
+            const progress = ((currentQuestion + 1) / questions.length * 100).toFixed(0);
+            
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('progress-fill').textContent = progress + '%';
+
+            const container = document.getElementById('question-container');
+            container.innerHTML = `
+                <div class="question-card">
+                    <h3>Question ${currentQuestion + 1} of ${questions.length}</h3>
+                    <p>${question.question}</p>
+                    <div class="options" id="options-container">
+                        ${question.options.map((option, index) => 
+                            `<div class="option" onclick="selectAnswer(${index})" data-index="${index}">
+                                ${option}
+                            </div>`
+                        ).join('')}
+                    </div>
+                    <div id="feedback" class="feedback"></div>
+                </div>
+            `;
+
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            const feedback = document.getElementById('feedback');
+            
+            // Disable all options
+            options.forEach(option => {
+                option.classList.add('disabled');
+                option.onclick = null;
+            });
+
+            // Mark correct and incorrect
+            options[selectedIndex].classList.add('selected');
+            options[question.correct].classList.add('correct');
+            
+            if (selectedIndex !== question.correct) {
+                options[selectedIndex].classList.add('incorrect');
+            }
+
+            // Show feedback
+            const isCorrect = selectedIndex === question.correct;
+            feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+            feedback.innerHTML = `
+                <strong>${isCorrect ? '✓ Correct!' : '✗ Incorrect'}</strong><br>
+                ${question.explanation}
+            `;
+
+            // Update score
+            if (isCorrect) {
+                score++;
+                document.getElementById('score').textContent = score;
+            }
+
+            // Store answer
+            answers.push({
+                question: question.question,
+                selected: question.options[selectedIndex],
+                correct: question.options[question.correct],
+                isCorrect: isCorrect
+            });
+
+            // Show next button
+            document.getElementById('next-btn').style.display = 'inline-block';
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function showResults() {
+            const percentage = Math.round((score / questions.length) * 100);
+            document.getElementById('final-score').textContent = percentage;
+
+            let summaryHTML = '<h3>Your Performance:</h3>';
+            answers.forEach((answer, index) => {
+                summaryHTML += `
+                    <div class="summary-item ${answer.isCorrect ? 'correct' : 'incorrect'}">
+                        <strong>Q${index + 1}:</strong> ${answer.question}<br>
+                        <strong>Your answer:</strong> ${answer.selected}<br>
+                        ${!answer.isCorrect ? `<strong>Correct answer:</strong> ${answer.correct}<br>` : ''}
+                    </div>
+                `;
+            });
+
+            document.getElementById('results-summary').innerHTML = summaryHTML;
+            
+            // Update score circle color based on performance
+            const circle = document.querySelector('.score-circle');
+            if (percentage >= 80) {
+                circle.style.background = 'linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)';
+            } else if (percentage >= 60) {
+                circle.style.background = 'linear-gradient(135deg, #f39c12 0%, #e67e22 100%)';
+            } else {
+                circle.style.background = 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)';
+            }
+
+            showScreen('results-screen');
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function goToLevelSelect() {
+            showScreen('level-select');
+        }
+
+        function restartGame() {
+            currentLevel = 0;
+            currentQuestion = 0;
+            score = 0;
+            answers = [];
+            showScreen('intro-screen');
+        }
+
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('E-Waste Educational Game Loaded');
+        });
+    </script>
+</body>
+</html>
