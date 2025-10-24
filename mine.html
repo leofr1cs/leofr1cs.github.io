@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Leonard’s Creeper Build</title>
+  <style>
+    body { margin: 0; background: #111; color: white; font-family: sans-serif; }
+    canvas { display: block; }
+    h1 { text-align: center; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Leonard’s Giant Creeper</h1>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.157.0/examples/js/controls/OrbitControls.js"></script>
+  <script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Light
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(5, 10, 7);
+    scene.add(light);
+
+    // Materials
+    const green = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+    const black = new THREE.MeshStandardMaterial({ color: 0x111111 });
+
+    // Create a Creeper shape (head, body, legs)
+    const group = new THREE.Group();
+
+    // Head
+    const head = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), green);
+    head.position.set(0, 8, 0);
+    group.add(head);
+
+    // Face pattern (black squares)
+    const eye1 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.1), black);
+    eye1.position.set(-1, 8.5, 2.05);
+    const eye2 = eye1.clone(); eye2.position.x = 1;
+    const mouth = new THREE.Mesh(new THREE.BoxGeometry(2, 1.5, 0.1), black);
+    mouth.position.set(0, 7.2, 2.05);
+    group.add(eye1, eye2, mouth);
+
+    // Body
+    const body = new THREE.Mesh(new THREE.BoxGeometry(3, 5, 2), green);
+    body.position.set(0, 4, 0);
+    group.add(body);
+
+    // Legs
+    const leg1 = new THREE.Mesh(new THREE.BoxGeometry(1.2, 2, 1.2), green);
+    const leg2 = leg1.clone(), leg3 = leg1.clone(), leg4 = leg1.clone();
+    leg1.position.set(-0.9, 0, -0.9);
+    leg2.position.set(0.9, 0, -0.9);
+    leg3.position.set(-0.9, 0, 0.9);
+    leg4.position.set(0.9, 0, 0.9);
+    group.add(leg1, leg2, leg3, leg4);
+
+    scene.add(group);
+    camera.position.set(10, 10, 15);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
