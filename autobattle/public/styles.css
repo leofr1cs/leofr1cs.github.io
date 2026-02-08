@@ -1,0 +1,256 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1a1a2e;
+    color: #eee;
+}
+
+.screen {
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Lobby */
+#lobby {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#lobby h1 {
+    font-size: 3em;
+    margin-bottom: 40px;
+    color: #4ecca3;
+}
+
+.lobby-controls {
+    display: flex;
+    gap: 40px;
+}
+
+.lobby-section {
+    background: #16213e;
+    padding: 30px;
+    border-radius: 10px;
+    min-width: 300px;
+}
+
+.lobby-section h2 {
+    margin-bottom: 20px;
+    color: #4ecca3;
+}
+
+.lobby-section input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #0f3460;
+    border: 1px solid #4ecca3;
+    color: #eee;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.lobby-section button {
+    width: 100%;
+    padding: 12px;
+    background: #4ecca3;
+    border: none;
+    color: #16213e;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.lobby-section button:hover {
+    background: #3db88f;
+}
+
+/* Game Screen */
+.game-header {
+    background: #16213e;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.room-info, .game-status, .player-stats {
+    display: flex;
+    gap: 20px;
+}
+
+.player-stats {
+    font-size: 18px;
+}
+
+.game-content {
+    display: flex;
+    gap: 20px;
+}
+
+.left-panel {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.shop-section, .bench-section, .log-section, .actions {
+    background: #16213e;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.shop-section h3, .bench-section h3, .log-section h3 {
+    margin-bottom: 10px;
+    color: #4ecca3;
+}
+
+.shop-offers {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.shop-offer {
+    background: #0f3460;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.shop-offer:hover {
+    background: #1a4d7a;
+}
+
+.shop-offer span {
+    font-size: 14px;
+}
+
+.shop-offer button {
+    padding: 5px 10px;
+    background: #4ecca3;
+    border: none;
+    color: #16213e;
+    font-weight: bold;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.bench {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    min-height: 60px;
+}
+
+.bench-unit {
+    background: #0f3460;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: grab;
+    font-size: 12px;
+    border: 2px solid #4ecca3;
+}
+
+.bench-unit:active {
+    cursor: grabbing;
+}
+
+.combat-log {
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 12px;
+    background: #0f3460;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.log-entry {
+    margin-bottom: 5px;
+    padding: 3px 0;
+    border-bottom: 1px solid #1a4d7a;
+}
+
+.action-btn {
+    width: 100%;
+    padding: 12px;
+    background: #4ecca3;
+    border: none;
+    color: #16213e;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.action-btn:hover {
+    background: #3db88f;
+}
+
+.action-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+}
+
+.boards {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.board-container {
+    background: #16213e;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.board-container h3 {
+    margin-bottom: 10px;
+    color: #4ecca3;
+}
+
+canvas {
+    border: 2px solid #4ecca3;
+    border-radius: 5px;
+    background: #0f3460;
+    display: block;
+}
+
+.game-over {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #16213e;
+    padding: 40px;
+    border-radius: 10px;
+    border: 3px solid #4ecca3;
+    text-align: center;
+    z-index: 1000;
+}
+
+.game-over h2 {
+    font-size: 2em;
+    color: #4ecca3;
+}
