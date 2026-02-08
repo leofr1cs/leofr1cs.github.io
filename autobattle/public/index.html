@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Battler</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Lobby Screen -->
+        <div id="lobby" class="screen">
+            <h1>Auto Battler</h1>
+            <div class="lobby-controls">
+                <div class="lobby-section">
+                    <h2>Create Room</h2>
+                    <input type="text" id="createName" placeholder="Your name" value="Player 1">
+                    <button id="createBtn">Create Room</button>
+                </div>
+                <div class="lobby-section">
+                    <h2>Join Room</h2>
+                    <input type="text" id="joinName" placeholder="Your name" value="Player 2">
+                    <input type="text" id="joinCode" placeholder="Room code">
+                    <button id="joinBtn">Join Room</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game" class="screen hidden">
+            <div class="game-header">
+                <div class="room-info">
+                    <span>Room: <strong id="roomCode"></strong></span>
+                    <span id="opponentStatus">Waiting for opponent...</span>
+                </div>
+                <div class="game-status">
+                    <span>Phase: <strong id="phase"></strong></span>
+                    <span>Time: <strong id="timer"></strong>s</span>
+                    <span>Round: <strong id="round"></strong></span>
+                </div>
+                <div class="player-stats">
+                    <div id="player1Stats"></div>
+                    <div id="player2Stats"></div>
+                </div>
+            </div>
+
+            <div class="game-content">
+                <div class="left-panel">
+                    <div class="shop-section">
+                        <h3>Shop (Gold: <span id="gold">3</span>)</h3>
+                        <div id="shop" class="shop-offers"></div>
+                        <button id="refreshBtn" class="action-btn">Refresh (1g)</button>
+                    </div>
+                    
+                    <div class="bench-section">
+                        <h3>Bench</h3>
+                        <div id="bench" class="bench"></div>
+                    </div>
+
+                    <div class="log-section">
+                        <h3>Combat Log</h3>
+                        <div id="combatLog" class="combat-log"></div>
+                    </div>
+
+                    <div class="actions">
+                        <button id="readyBtn" class="action-btn">Ready</button>
+                        <button id="restartBtn" class="action-btn hidden">Restart</button>
+                    </div>
+                </div>
+
+                <div class="boards">
+                    <div class="board-container">
+                        <h3 id="yourBoardLabel">Your Board</h3>
+                        <canvas id="yourBoard" width="600" height="400"></canvas>
+                    </div>
+                    <div class="board-container">
+                        <h3 id="opponentBoardLabel">Opponent Board</h3>
+                        <canvas id="opponentBoard" width="600" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div id="gameOver" class="game-over hidden">
+                <h2 id="gameOverMessage"></h2>
+            </div>
+        </div>
+    </div>
+
+    <script src="client.js"></script>
+</body>
+</html>

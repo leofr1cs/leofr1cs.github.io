@@ -1,0 +1,1 @@
+{"version":3,"file":"rng.d.ts","sourceRoot":"","sources":["../../../server/sim/rng.ts"],"names":[],"mappings":"AAEA,qBAAa,GAAG;IACd,OAAO,CAAC,IAAI,CAAS;gBAET,IAAI,EAAE,MAAM;IAKxB,IAAI,IAAI,MAAM;IAKd,OAAO,CAAC,GAAG,EAAE,MAAM,EAAE,GAAG,EAAE,MAAM,GAAG,MAAM;IAIzC,OAAO,CAAC,CAAC,EAAE,KAAK,EAAE,CAAC,EAAE,GAAG,CAAC,EAAE;CAQ5B"}
